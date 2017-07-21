@@ -114,7 +114,7 @@ def fetch_info_from_resume(resume, resume_html):
             salary = resume_page_salary_tag.text.strip('.')[:-4].replace('\xa0','')
             salary = int(salary)*currencies[currency]
         else:
-            salary = None
+            salary = 0
         resume['salary'] = salary
    
     return resume

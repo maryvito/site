@@ -1,12 +1,12 @@
 import datetime 
 import sys
+sys.path.append('..')
 
 import requests
 from bs4 import BeautifulSoup
 
 from config import cookies, RU_MONTH_VALUES 
-sys.path.append('..')
-# sys.path.append('D:\\fun\site')
+
 from models import Resume, Keywords, db_session
 
 
@@ -26,7 +26,7 @@ def parse_salary(bs_resume):
     if salary != 'по договоренности':
         salary = int(salary.split('руб')[0].replace(' ',''))
     else:
-        salary = None
+        salary = 0
     return salary
 
 
@@ -77,7 +77,7 @@ def parse_skills(bs_resume):
         for item in keywords_from_base:
             if item.keyword.lower() in professional_skills:
                 keywords_from_resume.append(item.keyword.lower())             
-    return str(keywords_from_resume)
+    return keywords_from_resume
 
 
 def parse_resume(bs_resume):
