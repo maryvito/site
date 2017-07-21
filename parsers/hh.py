@@ -4,10 +4,12 @@ import pprint
 import sys
 import requests
 
-from bs4 import BeautifulSoup
-
-
+# sys.path.append('D:\\fun\site')
 sys.path.append('/home/mashik/projects/site')
+from bs4 import BeautifulSoup
+from models import Resume, Keywords, db_session
+from config import currencies 
+
 from models import Resume, Keywords
 
 
@@ -84,7 +86,6 @@ def fetch_info_from_resume(resume, resume_html):
          Input: (dict) resume, (str) resume_html
          Output: (dict) resume
     """
-
     resume_page_soup = BeautifulSoup(resume_html, 'html.parser')
 
     # Check that the resume page include a highschool/university degree mark
@@ -98,7 +99,7 @@ def fetch_info_from_resume(resume, resume_html):
     resume_page_keywords_list = []
     # Add keywords to the list
     for tag in resume_page_keywords_tags:
-        resume_page_keywords_list.append(tag.text)
+        resume_page_keywords_list.append(tag.text.lower())
     resume['keywords'] = resume_page_keywords_list
 
     # Fetch the city name
@@ -108,28 +109,40 @@ def fetch_info_from_resume(resume, resume_html):
 
     resume_page_salary_tag = resume_page_soup.find('span', class_='resume-block__salary')
     if resume_page_salary_tag:
-        resume['salary'] = resume_page_salary_tag.text
-
-
+        salary = resume_page_salary_tag.text
+        if salary != '':
+            currency = resume_page_salary_tag.text.strip('.')[-3:]
+            salary = resume_page_salary_tag.text.strip('.')[:-4].replace('\xa0','')
+            salary = int(salary)*currencies[currency]
+        else:
+            salary = None
+        resume['salary'] = salary
+   
     return resume
 
 
 def put_data_resume_in_base(data_from_resumes_list, db_session):
     all_keywords = []
+    all_urls = []
+
+    for item in Keywords.query.all():
+        all_keywords.append(item.keyword)
+
+    for item in Resume.query.all():
+        all_urls.append(item.url)
+
     for item in data_from_resumes_list:
-
-        r = Resume(item['title'], item['gender'],
-                   item['age'], item['has_degree'],
-                   item['city'], str(item['keywords']),
-                   item['salary'], item['url'])
-
-        db_session.add(r)
-        # keywords_from_base = Keywords.query.all()
+        if item['url'] not in all_urls:
+            all_urls.append(item['url'])
+            resume = Resume(item['title'], item['gender'],
+                       item['age'], item['has_degree'],
+                       item['city'], str(item['keywords']),
+                       item['salary'], item['url'])
+            db_session.add(resume)
+        
         for keyword in item['keywords']:
-            # for item_key in keywords_from_base:
-            # if item_key.keyword in professional_skills:
-            # if keyword not in 
             if keyword not in all_keywords:
+                all_keywords.append(item['keywords'])
                 k = Keywords(keyword.lower())
                 db_session.add(k)
                 all_keywords.append(keyword.lower())
@@ -175,11 +188,10 @@ def fetch_resume_list_by_keyword(keyword):
 
     return full_resume_list
 
-def parse_resumes(db_session):
+def parse_resumes_from_hh(db_session):
     full_resume_list = fetch_resume_list_by_keyword('python')
     put_data_resume_in_base(full_resume_list, db_session)
 
 
 if __name__ == '__main__':
-    pp = pprint.PrettyPrinter(indent=4)
-    pp.pprint(fetch_resume_list_by_keyword('python'))
+    parse_resumes(db_session)
