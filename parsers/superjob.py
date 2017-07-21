@@ -5,7 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from config import cookies, RU_MONTH_VALUES 
-sys.path.append('/home/mashik/projects/site')
+sys.path.append('..')
 # sys.path.append('D:\\fun\site')
 from models import Resume, Keywords, db_session
 

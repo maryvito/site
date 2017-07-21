@@ -1,4 +1,4 @@
-from parsers import hh, superjob, config
+from parsers import hh, superjob
 from models import Resume, Keywords, db_session
 
 

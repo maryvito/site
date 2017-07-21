@@ -3,9 +3,8 @@
 import pprint
 import sys
 import requests
+sys.path.append('..')
 
-# sys.path.append('D:\\fun\site')
-sys.path.append('/home/mashik/projects/site')
 from bs4 import BeautifulSoup
 from models import Resume, Keywords, db_session
 from config import currencies 
