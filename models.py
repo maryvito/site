@@ -16,11 +16,12 @@ class Resume(Base):
     __tablename__ = 'resumes'
     id = Column(Integer, primary_key=True)
     title = Column(String(500))
-    gender = Column(Integer)
+    gender = Column(String)
     age = Column(Integer)
     has_degree = Column(Boolean)
-    city = Column(String(50))
+    city = Column(String(1000))
     keywords = Column(String)
+    salary = Column(Integer)
     url = Column(String(10000), unique=True)
 
     @property
@@ -30,15 +31,25 @@ class Resume(Base):
     def __init__(self, title=None, gender=None,
                  age=None, has_degree=None, 
                  city=None, keywords=None,
-                 url=None):
+                 salary=None, url=None):
         self.title = title
         self.gender = gender
         self.age = age
         self.has_degree = has_degree
         self.city = city
         self.keywords = keywords
+        self.salary = salary
         self.url = url
-   
+
+
+class Keywords(Base):
+    __tablename__ = 'keywords'
+    id = Column(Integer, primary_key=True)
+    keyword = Column(String(500))
+
+    def __init__(self, keyword=None):
+        self.keyword = keyword
+           
 
 if __name__ == "__main__":
     Base.metadata.create_all(bind=engine)
