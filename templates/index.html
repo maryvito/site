@@ -3,7 +3,7 @@
 <header class="navbar navbar-light">
     <nav class="container">
         <div class="navbar-header">
-            <a class="navbar-brand font-effect-shadow-multiple" style="font-family: 'Roboto', sans-serif; color: black; font-size: 2em" href="/">{{ output_page.title }}</a>
+            <a class="navbar-brand font-effect-shadow-multiple" style="font-family: 'Roboto', sans-serif; color: black; font-size: 2em" href="/">{{ OUTPUT_PAGE_CONFIG['title'] }}</a>
         </div>
     </nav>
 </header>
@@ -19,8 +19,8 @@
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    {% for column_num in range(0, output_page['table_headers']|length) %}
-                    <th>{{ output_page['table_headers'][column_num] }}</th>
+                    {% for column_num in range(0, OUTPUT_PAGE_CONFIG['table_headers']|length) %}
+                    <th>{{ OUTPUT_PAGE_CONFIG['table_headers'][column_num] }}</th>
                     {% endfor %}
                 </tr>
                 </thead>
@@ -31,7 +31,7 @@
                     <td class="col-md-2"><a href="{{ resume.url }}">{{ resume.title }}</a></td>
                     <td>{{ resume.city }}</td>
                     <td class="col-md-5">
-                        {% set keywords_list = resume.keywords | replace("[", "") | replace("]", "") | replace("'", "") %}
+                    {% set keywords_list = resume.keywords | replace("[", "") | replace("]", "") | replace("'", "") %}
                         {% for item in keywords_list.split(",") %}
                         {% if item %}
                         <span class="label label-default label-gray-light" style="display: inline-block;">{{ item }}</span>

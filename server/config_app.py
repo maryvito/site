@@ -1,11 +1,11 @@
-SITE_DICT = {'superjob.ru': 'SuperJob',
+SITES_DICT = {'superjob.ru': 'SuperJob',
              'hh.ru': 'HeadHunter'}
 
-GENDER_DICT = {'male': 'мужской',
+GENDERS_DICT = {'male': 'мужской',
                'female': 'женский'}
 
 OUTPUT_PAGE_CONFIG = {'title': 'CV Aggregator',
-                      'table_headers': ['N',
+                      'table_headers': ['ID',
                                         'Профиль',
                                         'Город',
                                         'Ключевые навыки',
