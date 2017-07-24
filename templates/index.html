@@ -34,7 +34,7 @@
                     {% set keywords_list = resume.keywords | replace("[", "") | replace("]", "") | replace("'", "") %}
                         {% for item in keywords_list.split(",") %}
                         {% if item %}
-                        <span class="label label-default label-gray-light" style="display: inline-block;">{{ item }}</span>
+                        <span class="label label-default label-blue-light" style="display: inline-block;">{{ item }}</span>
                         {% else %}
                         <p>-</p>
                         {% endif %}

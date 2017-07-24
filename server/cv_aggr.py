@@ -22,10 +22,12 @@ APP = Flask(
     static_folder=os.path.join(BASE_PATH, 'static')
 )
 
+
 @APP.route('/', methods=['GET'])
 def index(page=1):
     
     selected = {
+    'salary_none': 1,
     'salary_from': 0,
     'salary_to': SALARY_MAX,
     'gender': GENDERS_DICT.keys(),
@@ -41,6 +43,7 @@ def index(page=1):
         selected['city'] = request.args.getlist('city')
         selected['salary_from'] = request.args.get('salary_from', type=int)
         selected['salary_to'] = request.args.get('salary_to', type=int)
+        selected['salary_none'] = request.args.get('salary_none')
         page = request.args.get('page', type=int)
 
     resumes = db_session.query(Resume)
@@ -70,9 +73,12 @@ def index(page=1):
         resumes = resumes.\
                 filter(or_(Resume.salary <= selected['salary_to'], Resume.salary == None))
 
-    sqlalchemy_pagination = paginate(resumes, page, page_size=10)
+    if not selected['salary_none']:
+        resumes = resumes.\
+                filter(Resume.salary != None)
 
-    print(url_params_from_dict(selected))
+
+    sqlalchemy_pagination = paginate(resumes, page, page_size=10)
 
     flask_pagination = Pagination(
                             page=page,
@@ -112,7 +118,7 @@ def url_params_from_dict(selected_params):
         elif type(selected_params[key]) == type({}.keys()):
             for item in list(selected_params[key]):
                 url_string = url_string + '&' + key + '=' + str(item)
-        else:
+        elif str(selected_params[key]) != 'None':
             url_string = url_string + '&' + key + '=' + str(selected_params[key])
     
     return url_string
