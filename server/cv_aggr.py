@@ -55,6 +55,11 @@ def index(page=1):
             resumes = db_session.query(Resume).\
                 filter(Resume.url.contains(site))
 
+    if selected['city']:
+        for item in selected['city']:
+            resumes = resumes.\
+                filter(Resume.city.in_(selected['city']))
+
     if len(selected['gender']) == 1:
         for gender in selected['gender']:
             resumes = resumes.\
