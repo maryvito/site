@@ -13,9 +13,7 @@
                             title="Выберите..."
                             multiple>
                         {% for key, value in SITES_DICT.items()|sort %}
-                            <option value="{{ key }}" {% if key in selected['site'] %}selected{% endif %}>
-                                {{ value }}
-                            </option>
+                            <option value="{{ key }}" {% if key in selected['site'] %}selected{% endif %}>{{ value }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -34,9 +32,7 @@
                             title="Выберите навыки"
                             multiple>
                         {% for keyword in KEYWORDS_LIST %}
-                        <option value="{{ keyword }}" {% if keyword in selected['keyword'] %}selected{% endif %}>
-                            {{ keyword }}
-                        </option>
+                        <option value="{{ keyword }}" {% if keyword in selected['keyword'] %}selected{% endif %}>{{ keyword }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -52,9 +48,7 @@
                             title="Выберите пол"
                             multiple>
                         {% for key, value in GENDERS_DICT.items()|sort(reverse=True) %}
-                        <option value="{{ key }}" {% if key in selected['gender'] %}selected{% endif %}>
-                            {{ value }}
-                        </option>
+                        <option value="{{ key }}" {% if key in selected['gender'] %}selected{% endif %}>{{ value }}</option>
                         {% endfor %}
                      </select>
                 </div>

@@ -10,21 +10,11 @@ from config_app import OUTPUT_PAGE_CONFIG, SITES_DICT, GENDERS_DICT
 from flask_paginate import Pagination, get_page_parameter
 from sqlalchemy_pagination import paginate
 
+BASE_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 CITIES_LIST = sorted({item[0] for item in db_session.query(Resume.city)})
 
 SALARY_MAX = max({item[0] for item in db_session.query(Resume.salary) if item[0] is not None})
-
-BASE_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-selected = {
-    'salary_from': 0,
-    'salary_to': SALARY_MAX,
-    'gender': GENDERS_DICT.keys(),
-    'site': SITES_DICT.keys(),
-    'city': CITIES_LIST,
-    'keyword': []
-}
 
 APP = Flask(
     __name__,
@@ -33,8 +23,17 @@ APP = Flask(
 )
 
 @APP.route('/', methods=['GET'])
-def index(selected=selected):
-    page = 1
+def index(page=1):
+    
+    selected = {
+    'salary_from': 0,
+    'salary_to': SALARY_MAX,
+    'gender': GENDERS_DICT.keys(),
+    'site': SITES_DICT.keys(),
+    'city': CITIES_LIST,
+    'keyword': []
+    }
+
     if request.args:
         selected['site'] = request.args.getlist('site')
         selected['keyword'] = request.args.getlist('keyword')
@@ -71,7 +70,7 @@ def index(selected=selected):
         resumes = resumes.\
                 filter(or_(Resume.salary <= selected['salary_to'], Resume.salary == None))
 
-    sqlalchemy_pagination = paginate(resumes, 1, page_size=10)
+    sqlalchemy_pagination = paginate(resumes, page, page_size=10)
 
     print(url_params_from_dict(selected))
 
@@ -84,10 +83,8 @@ def index(selected=selected):
                             prev_label='<span class="glyphicon glyphicon-chevron-left" aria-hidden="false"></span>',
                             next_label='<span class="glyphicon glyphicon-chevron-right" aria-hidden="false"></span>',
                             display_msg='<b>{start}&ndash;{end}</b> {record_name} из <b>{total}</b> найденных',
-                            href='/?page={0}& %s' % url_params_from_dict(selected)
+                            href='/?page={0}%s' % url_params_from_dict(selected)
                             )
-
-    print(selected)
 
     return render_template(
         'index.html',
@@ -111,12 +108,12 @@ def url_params_from_dict(selected_params):
     for key in selected_params:
         if type(selected_params[key]) == type([]):
             for item in selected_params[key]:
-                url_string = url_string + key + '=' + str(item) + '&'
+                url_string = url_string + '&' + key + '=' + str(item)
         elif type(selected_params[key]) == type({}.keys()):
-            for item in list(selected[key]):
-                url_string = url_string + key + '=' + str(item) + '&'
+            for item in list(selected_params[key]):
+                url_string = url_string + '&' + key + '=' + str(item)
         else:
-            url_string = url_string + key + '=' + str(selected_params[key]) + '&'
+            url_string = url_string + '&' + key + '=' + str(selected_params[key])
     
     return url_string
 
