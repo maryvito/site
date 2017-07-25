@@ -54,7 +54,7 @@ def index(page=1):
 
     # fetch and filter resumes from database
     resumes = filtering_database_query_by_selected_params(db_session.query(Resume), selected)
-    print(type(db_session.query(Resume)))
+
     # pagination of database query
     sqlalchemy_pagination = paginate(resumes, page, page_size=10)
 
