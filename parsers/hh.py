@@ -2,19 +2,18 @@
 
 import pprint
 import sys
-import requests
+
 sys.path.append('..')
 
 from bs4 import BeautifulSoup
-from models import Resume, Keywords, db_session
-from config import currencies 
+import requests
 
-from models import Resume, Keywords
+from models import Resume, Keywords, db_session
+from config import CURRENCIES
 
 
 def get_html(url, params=None):
     user_agent = {'User-agent': 'Mozilla/5.0'}
-
     result = requests.Response
     result.status_code = None
 
@@ -23,12 +22,11 @@ def get_html(url, params=None):
     except requests.RequestException as error:
         print(error)
 
-    if result.status_code == requests.codes.ok:
+    if result.ok:
         return result.text
     else:
-        print('Something goes wrong.')
-        return None
-
+        print('Нет соединения с сайтом hh.ru')
+        
 
 def fetch_page_resume_list(html_page):
     """
@@ -108,13 +106,11 @@ def fetch_info_from_resume(resume, resume_html):
 
     resume_page_salary_tag = resume_page_soup.find('span', class_='resume-block__salary')
     if resume_page_salary_tag:
-        salary = resume_page_salary_tag.text
-        if salary != '':
-            currency = resume_page_salary_tag.text.strip('.')[-3:]
-            salary = resume_page_salary_tag.text.strip('.')[:-4].replace('\xa0','')
-            salary = int(salary)*currencies[currency]
-        else:
-            salary = 0
+        salary = resume_page_salary_tag.text or None
+        if salary:
+            currency = resume_page_salary_tag.text.strip('.').split(' ')[-1]
+            salary = resume_page_salary_tag.text.strip('.').split(' ')[0].replace('\xa0','')
+            salary = int(salary)*CURRENCIES[currency]
         resume['salary'] = salary
    
     return resume
@@ -159,7 +155,7 @@ def fetch_resume_list_by_keyword(keyword):
     full_resume_list = []
 
     # HH.ru limits page number value to 50 maximum
-    for page_number in range(0, 1):
+    for page_number in range(0, 20):
         url_args = {
             'exp_period': 'all_time',
             # HH.ru limits items max on page from 10 to 100
