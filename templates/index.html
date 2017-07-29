@@ -1,63 +1,65 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>Resumes</title>
-
-    <!-- Bootstrap -->
-    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-  </head>
-  <body>
-  	<div class="container">
-    {% include "navigation.html" %}
-  	
-	<div class="row">
-		<div class="col-md-12">
-			<table class="table">
-				<tr>
-					<th>Вакансия </th>
-					<th>Пол </th>
-					<th>Возраст</th>
-					<th>Высшее образование</th>
-					<th>Город</th>
-					<th>Навыки</th>
-					<th>URL</th>
-				</tr>
-				{% for resume in resumes %}
-			    <tr>
-			    	<td style="text-align:center">{{ resume.title }}</td>
-			    	<td style="text-align:center">{{ resume.gender }}</td>
-			    	<td style="text-align:center">{{ resume.age }}</td>
-			    	{% if resume.title %}
-			    	<td style="text-align:center">Есть</td>
-			    	{% else %}
-			    	<td style="text-align:center">Нет</td>
-			    	{% endif %}    	
-			   		<td style="text-align:center">{{ resume.city }}</td>
-			   		<td style="text-align:center">
-			    	{% for keyword in resume.keywords_list %}
-			        	{{ keyword }} 
-			        {% endfor %}</td>
-			        <td  style="text-align:center"><a href="{{ resume.url }}">{{ resume.url }}</a></td>
-			    </tr>
-			    {% endfor %}
-			</table> 
-		</div>
-	</div>
-	</div>
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="/static/js/bootstrap.min.js"></script>
-  </body>
-</html>
+{% extends "base.html" %}
+{% block content %}
+<header class="navbar navbar-light">
+    <nav class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand font-effect-shadow-multiple" style="font-family: 'Roboto', sans-serif; color: black; font-size: 2em" href="/">{{ OUTPUT_PAGE_CONFIG['title'] }}</a>
+        </div>
+    </nav>
+</header>
+<div class="container">
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                {% include "selection-form.html" %}
+            </div>
+            <div class="alert alert-info" style="border-radius: 0; border-top: 0; border-right: 0; border-left: 0">
+                <p class="text-left">Найдено {{ resumes|length }} резюме</p>
+            </div>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    {% for column_num in range(0, OUTPUT_PAGE_CONFIG['table_headers']|length) %}
+                    <th>{{ OUTPUT_PAGE_CONFIG['table_headers'][column_num] }}</th>
+                    {% endfor %}
+                </tr>
+                </thead>
+                <tbody>
+                {% for resume in pagination_items %}
+                <tr>
+                    <th scope="row" class="">{{ resume.id }}</th>
+                    <td class="col-md-2"><a href="{{ resume.url }}">{{ resume.title }}</a></td>
+                    <td>{{ resume.city }}</td>
+                    <td class="col-md-5">
+                    {% set keywords_list = resume.keywords | replace("[", "") | replace("]", "") | replace("'", "") %}
+                        {% for item in keywords_list.split(",") %}
+                        {% if item %}
+                        <span class="label label-default label-blue-light" style="display: inline-block;">{{ item }}</span>
+                        {% else %}
+                        <p>-</p>
+                        {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>
+                        <span class="glyphicon glyphicon-{% if resume.has_degree == True %}ok green{% elif resume.has_degree == False %}remove red{% endif %}"
+                              aria-hidden="true"></span>
+                    </td>
+                    <td class="col-md-1">{{ resume.age }}</td>
+                    <td>
+                        {% if resume.gender == "male" %}
+                        М
+                        {% elif resume.gender == "female" %}
+                        Ж
+                        {% endif %}
+                    </td>
+                    <td class="text-right col-md-1">{% if resume.salary %}{{ resume.salary }}{% elif resume.salary == 0 or not resume.salary %}<p>-</p>{% endif%}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <p>{{ flask_pagination.info }}</p>
+    <div class="row col-md-12 text-center">{{ flask_pagination.links }}</div>
+</div>
+{% endblock %}

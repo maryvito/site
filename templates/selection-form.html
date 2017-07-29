@@ -1,0 +1,130 @@
+<div class="panel-body">
+    <form role="form" class="form-inline" action="/" method="GET">
+        <div class="row">
+            <div class="col-sm-3">
+                <label for="selectSite">Площадки</label>
+                <div>
+                    <select class="form-control selectpicker"
+                            name="site"
+                            id="selectSite"
+                            data-width="100%"
+                            data-actions-box="true"
+                            data-selected-text-format="count > 3"
+                            title="Выберите..."
+                            multiple>
+                        {% for key, value in SITES_DICT.items()|sort %}
+                            <option value="{{ key }}" {% if key in selected['site'] %}selected{% endif %}>{{ value }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <label for="selectKeyword" style="">Ключевые навыки</label>
+                <div>
+                    <select class="form-control selectpicker"
+                            name="keyword"
+                            id="selectKeyword"
+                            data-size="8"
+                            data-width="100%"
+                            data-live-search="true"
+                            data-actions-box="true"
+                            data-selected-text-format="count > 4"
+                            title="Выберите навыки"
+                            multiple>
+                        {% for keyword in KEYWORDS_LIST %}
+                        <option value="{{ keyword }}" {% if keyword in selected['keyword'] %}selected{% endif %}>{{ keyword }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <label for="selectGender">Пол</label>
+                <div>
+                    <select class="form-control selectpicker"
+                            name="gender"
+                            id="selectGender"
+                            data-width="100%"
+                            data-actions-box="true"
+                            title="Выберите пол"
+                            multiple>
+                        {% for key, value in GENDERS_DICT.items()|sort(reverse=True) %}
+                        <option value="{{ key }}" {% if key in selected['gender'] %}selected{% endif %}>{{ value }}</option>
+                        {% endfor %}
+                     </select>
+                </div>
+            </div>
+            <div class="col-sm-3"></div>
+        </div>
+        <div class="row">&nbsp;</div>
+        <div class="row">
+            <div class="col-sm-3">
+                <label for="selectCity">Город</label>
+                <div>
+                    <select class="form-control selectpicker"
+                            name="city"
+                            id="selectCity"
+                            data-width="100%"
+                            data-actions-box="true"
+                            data-selected-text-format="count > 3"
+                            title="Выберите город"
+                            multiple>
+                            {% for city in CITIES_LIST %}
+                            <option value="{{ city }}"
+                            {% if city in selected['city'] %}
+                                selected
+                            {% endif %}>
+                                {{ city }}
+                            </option>
+                            {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <label for="selectSalary">Месячная зарплата, &#x20bd;</label>
+                <div class="input-group col-md-12">
+                    <span class="input-group-addon">от</span>
+                    <input value="{{ selected['salary_from'] }}"
+                           name="salary_from"
+                           type="number"
+                           step="5000"
+                           min="0"
+                           max="{{ SALARY_MAX }}"
+                           class="form-control"
+                           placeholder="0"/>
+                    <span class="input-group-addon" style="border-left: 0; border-right: 0">до</span>
+                    <input value="{{ selected['salary_to'] }}"
+                           name="salary_to"
+                           type="number"
+                           step="5000"
+                           min="0"
+                           max="{{ SALARY_MAX }}"
+                           class="form-control"
+                           placeholder="{{ selected['salary_to'] }}"/>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <label>&nbsp;</label>
+                <div>
+                    <button type="submit" class="btn btn-primary">Показать</button>
+                    <input name="page" value="1" type="hidden" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-6">
+                <div class="checkbox">
+                <label>
+                <input
+                    type="checkbox"
+                    {% if selected['salary_none'] %}
+                    checked 
+                    {% endif %}
+                    name="salary_none"
+                    value="show"><small> Показать резюме без указания зарплаты</small>
+                </label>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
