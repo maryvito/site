@@ -14,6 +14,6 @@ $ pip install -r requirements.txt
 * [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/) - парсинг страниц
 * [Flask](http://flask.pocoo.org/) - веб-приложение
 * [SQLAlchemy](http://www.sqlalchemy.org/) - создание базы данных, обработка данных
-* [flask-paginate](https://github.com/lixxu/flask-paginate) - пагинация страниц
+* [flask-paginate](https://github.com/lixxu/flask-paginate) - пагинация веб-страниц
 * [sqlalchemy-pagination](https://github.com/wizeline/sqlalchemy-pagination) - предварительная пагинация информации из базы данных
 
