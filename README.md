@@ -10,10 +10,10 @@
 $ pip install -r requirements.txt
 ```
 
-### Что есть что
-
-
-### В проекте используются:
+### В проекте используются сторонние библиотеки:
 * [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/) - парсинг страниц
-* [Flask](http://flask.pocoo.org/) - 
-*
+* [Flask](http://flask.pocoo.org/) - веб-приложение
+* [SQLAlchemy](http://www.sqlalchemy.org/) - создание базы данных, обработка данных
+* [flask-paginate](https://github.com/lixxu/flask-paginate) - пагинация страниц
+* [sqlalchemy-pagination](https://github.com/wizeline/sqlalchemy-pagination) - предварительная пагинация информации из базы данных
+
