@@ -1,4 +1,5 @@
-import datetime 
+import datetime
+import pprint
 import sys
 sys.path.append('..')
 
@@ -10,6 +11,7 @@ from models import Resume, Keywords, db_session
 
 
 def get_html(url):
+    print(url)
     result = requests.get(url, cookies=COOKIES)
      
     if result.ok:
@@ -95,6 +97,8 @@ def get_urls_and_titles_resumes_from_search_html(html):
     titles_and_urls_tags = bs_resumes.find_all('a', class_ = 'sj_h3 ResumeListElementNew_profession')
     for title_and_url_tag in titles_and_urls_tags:
         titles_and_urls_resumes[title_and_url_tag.get('title')] = title_and_url_tag.get('href').split('?')[0]
+        print('1!!!  ')
+        print(titles_and_urls_resumes)
     return titles_and_urls_resumes
 
 
@@ -112,6 +116,7 @@ def parse_resumes(titles_and_urls_resumes):
 
 
 def save_data_to_base(data_resumes_list, db_session):
+    
     all_urls = []
     for item in Resume.query.all():
         all_urls.append(item.url)
@@ -123,7 +128,7 @@ def save_data_to_base(data_resumes_list, db_session):
                        item['age'], item['has_degree'],
                        item['city'], str(item['keywords']),
                        item['salary'], item['url'])
-                       db_session.add(resume)
+            db_session.add(resume)
     db_session.commit()
 
 
@@ -134,7 +139,7 @@ def parse_resumes_from_superjob(db_session):
     while requests.get(url.format(number_page)).status_code == 200 and number_page < 10:
         html += get_html(url.format(number_page))
         number_page += 1
-
+    
     data_resumes_list = parse_resumes(get_urls_and_titles_resumes_from_search_html(html))
     save_data_to_base(data_resumes_list, db_session)
 
